@@ -384,22 +384,6 @@ def plot_daisyworld_diagnostics(
     plt.tight_layout()
     plt.show()
 
-    # === Zonal daisy breakdown by latitude band ===
-    north_indices = np.where(latitudes >= 0)[0]
-    lat_bins = [(i, i + lat_step) for i in range(0, 90, lat_step)]
-
-    # White
-    white_bucket_labels = []
-    white_bucket_series = []
-    for low, high in lat_bins:
-        band_indices = [i for i in north_indices if low <= latitudes[i] < high]
-        if band_indices:
-            bucket_avg = W_hist[:, band_indices].mean(axis=1)
-            white_bucket_series.append(bucket_avg)
-            white_bucket_labels.append(f"{low}–{high}°N")
-
-    plt
-
 
 #RUN MODEL
 
