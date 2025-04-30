@@ -293,6 +293,11 @@ def run_daisyworld_profiled():
 
 
 
+import streamlit as st
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.ndimage import gaussian_filter1d
+
 def plot_daisyworld_diagnostics(
     T_hist, W_hist, B_hist, latitudes, area_weights,
     years_per_step=0.01,
@@ -300,10 +305,6 @@ def plot_daisyworld_diagnostics(
     epsilon=0.5, sigma=5.67e-8, alpha_soil=0.3,
     lat_step=30
 ):
-    from scipy.ndimage import gaussian_filter1d
-    import matplotlib.pyplot as plt
-    import numpy as np
-
     steps = T_hist.shape[0]
     time_kyr = np.arange(steps) * years_per_step
 
@@ -311,78 +312,71 @@ def plot_daisyworld_diagnostics(
     global_white = W_hist @ area_weights
     global_black = B_hist @ area_weights
 
-    # === Raw derivatives
+    solar_forcing = np.array([
+        S0 * (1 + solar_amplitude * np.sin(2 * np.pi * t / solar_period_kyr))
+        for t in time_kyr
+    ])
+    T_eq = ((solar_forcing * (1 - alpha_soil)) / (4 * epsilon * sigma))**0.25 - 273.15
+
     raw_dT_dt = np.gradient(global_T, years_per_step)
     raw_dT_eq_dt = np.gradient(T_eq, years_per_step)
     raw_dT_diff = raw_dT_dt - raw_dT_eq_dt
 
-    # === Apply slight smoothing
-    smoothing_sigma = 4  # roughly ~2 time steps
-    dT_dt = gaussian_filter1d(raw_dT_dt, sigma=smoothing_sigma)
-    dT_eq_dt = gaussian_filter1d(raw_dT_eq_dt, sigma=smoothing_sigma)
-    dT_diff = gaussian_filter1d(raw_dT_diff, sigma=smoothing_sigma)
-
-    # === Trimming weird boundary gradients
+    smoothing_sigma = 4
+    dT_dt = gaussian_filter1d(raw_dT_dt, sigma=smoothing_sigma)[2:-2]
+    dT_eq_dt = gaussian_filter1d(raw_dT_eq_dt, sigma=smoothing_sigma)[2:-2]
+    dT_diff = gaussian_filter1d(raw_dT_diff, sigma=smoothing_sigma)[2:-2]
     time_kyr_trimmed = time_kyr[2:-2]
-    dT_dt = dT_dt[2:-2]
-    dT_eq_dt = dT_eq_dt[2:-2]
-    dT_diff = dT_diff[2:-2]
 
-    # === Northern Hemisphere filter
     north_idx = latitudes >= 0
 
-    # === Final snapshot ===
-    plt.figure(figsize=(10, 5))
-    plt.subplot(1, 2, 1)
-    plt.plot(latitudes[north_idx], T_hist[-1][north_idx])
-    plt.title("Final Temperature (North Only)")
-    plt.xlabel("Latitude (°)")
-    plt.ylabel("Temperature (°C)")
+    # === Plot 1: Final state
+    fig1, ax = plt.subplots(1, 2, figsize=(12, 5))
+    ax[0].plot(latitudes[north_idx], T_hist[-1][north_idx])
+    ax[0].set_title("Final Temperature (North Only)")
+    ax[0].set_xlabel("Latitude (°)")
+    ax[0].set_ylabel("Temperature (°C)")
 
-    plt.subplot(1, 2, 2)
-    plt.plot(latitudes[north_idx], W_hist[-1][north_idx], label='White')
-    plt.plot(latitudes[north_idx], B_hist[-1][north_idx], label='Black')
-    plt.title("Final Daisy Coverage (North Only)")
-    plt.xlabel("Latitude (°)")
-    plt.ylabel("Coverage")
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+    ax[1].plot(latitudes[north_idx], W_hist[-1][north_idx], label='White')
+    ax[1].plot(latitudes[north_idx], B_hist[-1][north_idx], label='Black')
+    ax[1].set_title("Final Daisy Coverage (North Only)")
+    ax[1].set_xlabel("Latitude (°)")
+    ax[1].set_ylabel("Coverage")
+    ax[1].legend()
+    st.pyplot(fig1)
 
-    # === Global dynamics ===
-    plt.figure(figsize=(10, 4))
-    plt.plot(time_kyr, global_T, label='Global T (°C)')
-    plt.xlabel("Time (kyr)")
-    plt.title("Global Temperature")
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
+    # === Plot 2: Global Temperature
+    fig2, ax2 = plt.subplots(figsize=(10, 4))
+    ax2.plot(time_kyr, global_T, label='Global T (°C)')
+    ax2.set_xlabel("Time (kyr)")
+    ax2.set_title("Global Temperature")
+    ax2.legend()
+    ax2.grid(True)
+    st.pyplot(fig2)
 
-    # === Rate of change comparison ===
-    plt.figure(figsize=(10, 5))
-    plt.plot(time_kyr_trimmed, dT_dt, label='dT/dt (Actual)', color='tab:red')
-    plt.plot(time_kyr_trimmed, dT_eq_dt, label='dT_eq/dt (From Forcing)', color='tab:blue', linestyle='--')
-    plt.axhline(0, color='gray', linestyle='--', linewidth=1)
-    plt.xlabel("Time (kyr)")
-    plt.ylabel("Rate of Temperature Change (°C/kyr)")
-    plt.title("Rate of Change: Actual vs. Equilibrium Temperature")
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
+    # === Plot 3: Rate of change
+    fig3, ax3 = plt.subplots(figsize=(10, 5))
+    ax3.plot(time_kyr_trimmed, dT_dt, label='dT/dt (Actual)', color='tab:red')
+    ax3.plot(time_kyr_trimmed, dT_eq_dt, label='dT_eq/dt (From Forcing)', color='tab:blue', linestyle='--')
+    ax3.axhline(0, color='gray', linestyle='--', linewidth=1)
+    ax3.set_xlabel("Time (kyr)")
+    ax3.set_ylabel("Rate of Temperature Change (°C/kyr)")
+    ax3.set_title("Rate of Change: Actual vs. Equilibrium Temperature")
+    ax3.legend()
+    ax3.grid(True)
+    st.pyplot(fig3)
 
-    # === Deviation from equilibrium forcing ===
-    plt.figure(figsize=(10, 5))
-    plt.plot(time_kyr_trimmed, dT_diff, label='dT/dt - dT_eq/dt', color='purple')
-    plt.axhline(0, color='gray', linestyle='--', linewidth=1)
-    plt.xlabel("Time (kyr)")
-    plt.ylabel("Difference in dT/dt (°C/kyr)")
-    plt.title("Deviation from Equilibrium Forcing")
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.show()
+    # === Plot 4: Deviation
+    fig4, ax4 = plt.subplots(figsize=(10, 5))
+    ax4.plot(time_kyr_trimmed, dT_diff, label='dT/dt - dT_eq/dt', color='purple')
+    ax4.axhline(0, color='gray', linestyle='--', linewidth=1)
+    ax4.set_xlabel("Time (kyr)")
+    ax4.set_ylabel("Difference in dT/dt (°C/kyr)")
+    ax4.set_title("Deviation from Equilibrium Forcing")
+    ax4.legend()
+    ax4.grid(True)
+    st.pyplot(fig4)
+
 
 
 #RUN MODEL
