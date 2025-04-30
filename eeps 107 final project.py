@@ -42,8 +42,8 @@ use_perturbations = True
 perturbation_strength = 0.001
 
 # --- Simulation Control ---
-steps = 20000
-years_per_step = 0.01
+steps = 2000
+years_per_step = 0.1
 initial_daisy_area = 0.02
 baseline_fraction = 0.07
 use_transport = True
@@ -110,8 +110,8 @@ with st.expander("Planetary Transport & Feedback"):
 with st.expander("Perturbation & Simulation Control"):
     use_perturbations = st.checkbox("Enable Perturbations", True)
     perturbation_strength = st.slider("Perturbation Strength", 0.0, 0.01, 0.001)
-    steps = st.number_input("Simulation Steps", 1000, 100000, 20000, step=1000)
-    years_per_step = st.number_input("Millenia per Step", 0.001, 1.0, 0.01)
+    steps = st.number_input("Simulation Steps", 1000, 100000, 2000, step=1000)
+    years_per_step = st.number_input("Millenia per Step", 0.001, 1.0, 0.1)
     initial_daisy_area = st.slider("Initial Daisy Area", 0.0, 0.1, 0.02)
     baseline_fraction = st.slider("Baseline Forcing Fraction", 0.0, 0.2, 0.07)
 
