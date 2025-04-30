@@ -29,7 +29,7 @@ That brings us to the graphs, which show a few different things. First, you can 
 Second, you can see the global temperature over time, and how the flowers have managed to massively terraform their ecosystem
 Third, if you want to see something a little more mathematical, we also have the difference between the change in temperature and what the planet would naturally be at without the flowers, along with a zoomed in plot of the actual differences
 Finally, we have plots of the population of each type of flower at different latitudes over time
-"""
+""")
 
 
 # === Model Parameters ===
