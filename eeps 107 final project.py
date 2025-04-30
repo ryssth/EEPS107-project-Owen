@@ -12,6 +12,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.ndimage import gaussian_filter1d
 import time
+
+st.title("Daisyworld Simulation")
+
+st.markdown("""
+Welcome to Daisyworld, an interactive simulation to show the amazing complexities of the earth system! This world is a little simpler than our own, with only 2 species of daisies living on the planet. 
+We have white daisies, which reflect nearly all the sunlight that hits them, and black daisies, that absorb nearly all the sunlight that hits them, and they are both competing to grow to cover the entire world.
+
+While the classic daisyworld model simulates temperature and flowers as variables slowly changing over time, this model brings in a bit more complexity
+- Rather than assuming the earth is flat, we assume it is a sphere(though not tilted), and simulate different latitudes differently
+- Daisies have a relatively complex population dynamic, with temperature able to have nonlinear effects on their growth
+- A sprinkle of randomness available in case you want to see a bit more chaos
+- So much more! Play around with the variables to see what madness you can generate in the plots!
+
+That brings us to the graphs, which show a few different things. First, you can see the temperature from the equator going north, and the population of white daisies and black daisies along the same band.
+Second, you can see the global temperature over time, and how the flowers have managed to massively terraform their ecosystem
+Third, if you want to see something a little more mathematical, we also have the difference between the change in temperature and what the planet would naturally be at without the flowers, along with a zoomed in plot of the actual differences
+Finally, we have plots of the population of each type of flower at different latitudes over time
+"""
+
+
 # === Model Parameters ===
 
 # --- Model parameters ---
@@ -376,6 +396,33 @@ def plot_daisyworld_diagnostics(
     ax4.legend()
     ax4.grid(True)
     st.pyplot(fig4)
+
+
+        # === White Daisy Coverage: 0° to 90° every 10° ===
+    pos_lats = np.arange(0, 91, 10)
+    pos_lat_indices = [np.argmin(np.abs(latitudes - lat)) for lat in pos_lats]
+
+    fig7, ax7 = plt.subplots(figsize=(10, 6))
+    for i, lat in zip(pos_lat_indices, pos_lats):
+        ax7.plot(time_kyr, W_hist[:, i], label=f'White @ {lat}°')
+    ax7.set_title("White Daisy Coverage (0° to 90°)")
+    ax7.set_xlabel("Time (kyr)")
+    ax7.set_ylabel("Coverage Fraction")
+    ax7.legend(title="Latitude")
+    ax7.grid(True)
+    st.pyplot(fig7)
+
+    # === Black Daisy Coverage: 0° to 90° every 10° ===
+    fig8, ax8 = plt.subplots(figsize=(10, 6))
+    for i, lat in zip(pos_lat_indices, pos_lats):
+        ax8.plot(time_kyr, B_hist[:, i], label=f'Black @ {lat}°')
+    ax8.set_title("Black Daisy Coverage (0° to 90°)")
+    ax8.set_xlabel("Time (kyr)")
+    ax8.set_ylabel("Coverage Fraction")
+    ax8.legend(title="Latitude")
+    ax8.grid(True)
+    st.pyplot(fig8)
+
 
 
 
