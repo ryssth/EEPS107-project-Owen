@@ -35,6 +35,9 @@ Third, if you want to see something a little more mathematical, we also have the
 Finally, we have plots of the population of each type of flower at different latitudes over time.
 
 
+
+This simulation was built using information from Atmosphere, Ocean, and Climate Dynamics, by John Marshall and R. Alan Plumb, which is available online! If you want to learn more and are ready for some math then you should absolutely give it a read!
+
 """)
 
 
@@ -100,20 +103,20 @@ cloud_albedo_factor = 0.05     # how much daisy coverage reduces soil albedo
 
 
 with st.expander("Solar Forcing"):
-    S0 = st.slider("Base Solar Constant (S0)", 1000, 1400, 1200)
+    S0 = st.slider("Base Solar Constant (S0)", 1000, 2000, 1360)
     solar_amplitude = st.slider("Solar Amplitude", 0.0, 1.0, 0.5)
     solar_period_kyr = st.slider("Solar Period (kyr)", 1.0, 100.0, 25.0)
     use_random_solar_phase = st.checkbox("Random Solar Phase", False)
     use_baseline_drift = st.checkbox("Baseline Drift", False)
     baseline_drift_per_kyr = st.slider("Baseline Drift per kyr", 0.0, 0.2, 0.05)
     use_solar_jumps = st.checkbox("Enable Solar Jumps", False)
-    solar_jump_magnitude = st.slider("Solar Jump Magnitude", 0.0, 0.5, 0.1)
-    solar_jump_frequency = st.number_input("Solar Jump Frequency (steps)", 100, 5000, 500, step=100)
+    solar_jump_magnitude = st.slider("Solar Jump Magnitude", 0.0, 1, 0.1)
+    solar_jump_frequency = st.number_input("Solar Jump Frequency (steps)", 10, 5000, 500, step=10)
 
 with st.expander("Daisy Growth"):
     T_opt_white = st.slider("White Daisy Optimal Temp (°C)", -30, 30, 10)
     T_opt_black = st.slider("Black Daisy Optimal Temp (°C)", -30, 30, -10)
-    T_range = st.slider("Growth Temp Range", 1, 50, 10)
+    T_range = st.slider("Growth Temp Range", 1, 100, 10)
     death_rate = st.number_input("Base Death Rate", 0.0, 0.1, 0.01)
 
 with st.expander("Death Behavior"):
@@ -137,7 +140,7 @@ with st.expander("Perturbation & Simulation Control"):
     use_perturbations = st.checkbox("Enable Perturbations", True)
     perturbation_strength = st.slider("Perturbation Strength", 0.001, 0.1, 0.001)
     steps = st.number_input("Simulation Steps", 1000, 100000, 2000, step=1000)
-    years_per_step = st.number_input("Millenia per Step", 0.001, 1.0, 0.1)
+    years_per_step = st.number_input("Millenia per Step", 0.001, 100, 0.1)
     initial_daisy_area = st.slider("Initial Daisy Area", 0.0, 0.1, 0.02)
     baseline_fraction = st.slider("Baseline Forcing Fraction", 0.0, 0.2, 0.07)
 
