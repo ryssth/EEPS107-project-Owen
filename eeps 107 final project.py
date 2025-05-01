@@ -103,9 +103,9 @@ cloud_albedo_factor = 0.05     # how much daisy coverage reduces soil albedo
 
 
 with st.expander("Solar Forcing"):
-    S0 = st.slider("Base Solar Constant (S0)", 1000, 2000, 1360)
+    S0 = st.slider("Base Solar Constant (S0)", 0, 2000, 1361)
     solar_amplitude = st.slider("Solar Amplitude", 0.0, 1.0, 0.5)
-    solar_period_kyr = st.slider("Solar Period (kyr)", 1.0, 100.0, 25.0)
+    solar_period_kyr = st.numper_input("Solar Period (kyr)", 0.1, 1000.0, 25.0)
     use_random_solar_phase = st.checkbox("Random Solar Phase", False)
     use_baseline_drift = st.checkbox("Baseline Drift", False)
     baseline_drift_per_kyr = st.slider("Baseline Drift per kyr", 0.0, 0.2, 0.05)
