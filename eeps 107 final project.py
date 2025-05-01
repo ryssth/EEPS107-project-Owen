@@ -110,7 +110,7 @@ with st.expander("Solar Forcing"):
     use_baseline_drift = st.checkbox("Baseline Drift", False)
     baseline_drift_per_kyr = st.slider("Baseline Drift per kyr", 0.0, 0.2, 0.05)
     use_solar_jumps = st.checkbox("Enable Solar Jumps", False)
-    solar_jump_magnitude = st.slider("Solar Jump Magnitude", 0.0, 1, 0.1)
+    solar_jump_magnitude = st.slider("Solar Jump Magnitude", 0.0, 1.0, 0.1)
     solar_jump_frequency = st.number_input("Solar Jump Frequency (steps)", 10, 5000, 500, step=10)
 
 with st.expander("Daisy Growth"):
@@ -140,7 +140,7 @@ with st.expander("Perturbation & Simulation Control"):
     use_perturbations = st.checkbox("Enable Perturbations", True)
     perturbation_strength = st.slider("Perturbation Strength", 0.001, 0.1, 0.001)
     steps = st.number_input("Simulation Steps", 1000, 100000, 2000, step=1000)
-    years_per_step = st.number_input("Millenia per Step", 0.001, 100, 0.1)
+    years_per_step = st.number_input("Millenia per Step", 0.001, 100.0, 0.1)
     initial_daisy_area = st.slider("Initial Daisy Area", 0.0, 0.1, 0.02)
     baseline_fraction = st.slider("Baseline Forcing Fraction", 0.0, 0.2, 0.07)
 
