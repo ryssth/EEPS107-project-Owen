@@ -453,3 +453,6 @@ plot_daisyworld_diagnostics(
     S0=S0, epsilon=epsilon, sigma=sigma, alpha_soil=alpha_soil
 )
 
+st.markdown("""
+This simulation was built using information from Atmosphere, Ocean, and Climate Dynamics, by John Marshall and R. Alan Plumb, which is available online! If you want to learn more and are ready for some math then you should absolutely give it a read!
+""")
