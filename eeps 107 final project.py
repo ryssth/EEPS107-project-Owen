@@ -35,9 +35,6 @@ Third, if you want to see something a little more mathematical, we also have the
 Finally, we have plots of the population of each type of flower at different latitudes over time.
 
 
-
-This simulation was built using information from Atmosphere, Ocean, and Climate Dynamics, by John Marshall and R. Alan Plumb, which is available online! If you want to learn more and are ready for some math then you should absolutely give it a read!
-
 """)
 
 
